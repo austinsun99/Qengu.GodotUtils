@@ -3,6 +3,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using ArgumentData = (string fullArg, string name, string? type, string? defaultValue);
+
 namespace Qengu.GodotUtils.SourceGenerators;
 
 /// <summary>
@@ -45,13 +47,14 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
 
         AttributeData data = ctx.Attributes.First();
         string initFuncName = (string)data.ConstructorArguments[0].Value!;
+        string? sceneName = (string?)data.ConstructorArguments[1].Value!;
 
         var initMethodSymbol =
             classDeclaration.Members
             .OfType<MethodDeclarationSyntax>()
             .FirstOrDefault(m => m.Identifier.Text == initFuncName);
 
-        List<(string fullArg, string name, string? type, string? defaultValue)>? initParams = null;
+        List<ArgumentData>? initParams = null;
         if (initMethodSymbol is not null)
         {
             initParams = [];
@@ -68,6 +71,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         return new InstantiableInfo(
                 symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToDisplayString(),
                 symbol.Name,
+                sceneName,
                 initFuncName,
                 initParams?.ToArray(),
                 ctx.TargetNode.SyntaxTree.FilePath);
@@ -78,7 +82,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         if (string.IsNullOrEmpty(projectDir)) return;
         if (info is not { } value) return;
 
-        string resPath = ToResPath(info.AbsFilePath, projectDir!);
+        string resPath = ToResPath(info.AbsFilePath, projectDir!, info.SceneName);
 
         bool hasInit = value.InitParams != null;
 
@@ -127,7 +131,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         spc.AddSource($"{value.ClassName}.g.cs", SourceText.From(output, Encoding.UTF8));
     }
 
-    private static string ToResPath(string absPath, string projectDir)
+    private static string ToResPath(string absPath, string projectDir, string? customFileName)
     {
         string normalizedRoot = projectDir.Replace('\\', '/').TrimEnd('/');
         string normalizedFile = absPath.Replace('\\', '/');
@@ -136,7 +140,10 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
 
         string relative = normalizedFile.Substring(normalizedRoot.Length).TrimStart('/');
         string dir = Path.GetDirectoryName(relative);
+
         string fileName = Path.GetFileNameWithoutExtension(relative);
+        if (customFileName is not null)
+            fileName = customFileName;
         return "res://" + Path.Combine(dir, ToSnakeCase(fileName) + ".tscn");
     }
 
@@ -172,14 +179,16 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
     {
         public readonly string? NamespaceName;
         public readonly string ClassName;
+        public readonly string? SceneName;
         public readonly (string fullArg, string name, string? type, string? defaultValue)[]? InitParams;
         public readonly string AbsFilePath;
 
         public readonly string InitName;
-        public InstantiableInfo(string? namespaceName, string className, string initName, (string fullArg, string name, string? type, string? defaultValue)[]? _initParams, string absFilePath)
+        public InstantiableInfo(string? namespaceName, string className, string? sceneName, string initName, ArgumentData[]? _initParams, string absFilePath)
         {
             NamespaceName = namespaceName;
             ClassName = className;
+            SceneName = sceneName;
             InitName = initName;
             InitParams = _initParams;
             AbsFilePath = absFilePath;

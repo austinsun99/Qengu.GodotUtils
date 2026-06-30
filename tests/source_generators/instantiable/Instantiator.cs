@@ -7,5 +7,8 @@ public partial class Instantiator : Node
     {
         var node = InstantiableNode.Instantiate("Init Message Test");
         AddChild(node);
+
+        var nodeTwo = InstantiableNodeTwo.Instantiate();
+        AddChild(nodeTwo);
     }
 }

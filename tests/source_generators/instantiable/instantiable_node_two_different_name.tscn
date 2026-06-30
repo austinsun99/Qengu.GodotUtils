@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bnbjracgtyv7"]
+
+[ext_resource type="Script" uid="uid://b45iugabifk6r" path="res://source_generators/instantiable/InstantiableNodeTwo.cs" id="1_gsb3b"]
+
+[node name="InstantiableNodeTwoDifferentName" type="Node" unique_id=1612734059]
+script = ExtResource("1_gsb3b")
+
+[node name="Child 1" type="Node" parent="." unique_id=345555412]
+
+[node name="Child 2" type="Node" parent="." unique_id=376988651]
