@@ -1,4 +1,4 @@
-namespace Qengu.GodotUtils.SourceGenerators;
+namespace Qengu.GodotUtils.GeneratorAnnotations;
 
 /// <summary>
 /// An attribute which implements a generator providing statically typed Instantiate function.

@@ -13,7 +13,7 @@ namespace Qengu.GodotUtils.SourceGenerators;
 sealed public class InstantiableSourceGenerator : IIncrementalGenerator
 {
 
-    private readonly string AttributeName = "Qengu.GodotUtils.SourceGenerators.Instantiable.InstantiableAttribute";
+    private const string AttributeName = "Qengu.GodotUtils.GeneratorAnnotations.InstantiableAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -40,7 +40,6 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
 
     private static InstantiableInfo? GetInstantiableInfo(GeneratorAttributeSyntaxContext ctx)
     {
-
         var symbol = (INamedTypeSymbol)ctx.TargetSymbol;
         var classDeclaration = (ClassDeclarationSyntax)ctx.TargetNode;
 

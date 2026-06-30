@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ccou0rp8cr7gw"]
+
+[ext_resource type="Script" uid="uid://bxj8vew74r1tx" path="res://source_generators/instantiable/InstantiableNode.cs" id="1_pca0l"]
+
+[node name="InstantiableNode" type="Node" unique_id=2068345026]
+script = ExtResource("1_pca0l")
