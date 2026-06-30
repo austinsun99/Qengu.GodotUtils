@@ -1,4 +1,8 @@
 namespace Qengu.GodotUtils.Extensions;
+
+/// <summary>
+/// Extension methods related to numbers
+/// </summary>
 public static class NumberExtensions
 {
     public const int FLOATCOMPARISONDECIMALPLACES = 6;

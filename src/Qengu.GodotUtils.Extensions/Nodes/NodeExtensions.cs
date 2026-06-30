@@ -2,6 +2,9 @@ using Godot;
 
 namespace Qengu.GodotUtils.Extensions;
 
+/// <summary>
+/// Extension methods for nodes
+/// </summary>
 public static class NodeExtensions
 {
 
