@@ -1,3 +1,5 @@
+using System;
+
 namespace Qengu.GodotUtils.Extensions;
 
 /// <summary>
