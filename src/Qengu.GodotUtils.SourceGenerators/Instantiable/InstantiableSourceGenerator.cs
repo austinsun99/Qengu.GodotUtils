@@ -2,8 +2,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-
-using ArgumentData = (string fullArg, string name, string? type, string? defaultValue);
+using Qengu.GodotUtils.GeneratorAnnotations;
 
 namespace Qengu.GodotUtils.SourceGenerators;
 
@@ -15,27 +14,20 @@ namespace Qengu.GodotUtils.SourceGenerators;
 sealed public class InstantiableSourceGenerator : IIncrementalGenerator
 {
 
-    private const string AttributeName = "Qengu.GodotUtils.GeneratorAnnotations.InstantiableAttribute";
+    private const string ATTRIBUTENAME = "Qengu.GodotUtils.GeneratorAnnotations.InstantiableAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 
-        var godotProjectDir = context.AnalyzerConfigOptionsProvider
-            .Select(static (provider, _) =>
-                    {
-                        provider.GlobalOptions.TryGetValue("build_property.GodotProjectDir", out var dir);
-                        return dir;
-                    });
-
         IncrementalValuesProvider<InstantiableInfo?> instantiableInfo =
             context.SyntaxProvider
             .ForAttributeWithMetadataName(
-                    AttributeName,
+                    ATTRIBUTENAME,
                     predicate: static (s, _) => true,
                     transform: static (ctx, _) => GetInstantiableInfo(ctx))
             .Where(static m => m is not null);
 
-        var combined = instantiableInfo.Combine(godotProjectDir);
+        var combined = instantiableInfo.Combine(GeneratorHelper.Godot.GetProjectDirectory(context));
 
         context.RegisterSourceOutput(combined, static (spc, src) => Execute(src.Left, src.Right, spc));
     }
@@ -49,31 +41,12 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         string initFuncName = (string)data.ConstructorArguments[0].Value!;
         string? sceneName = (string?)data.ConstructorArguments[1].Value!;
 
-        var initMethodSymbol =
-            classDeclaration.Members
-            .OfType<MethodDeclarationSyntax>()
-            .FirstOrDefault(m => m.Identifier.Text == initFuncName);
-
-        List<ArgumentData>? initParams = null;
-        if (initMethodSymbol is not null)
-        {
-            initParams = [];
-            foreach (ParameterSyntax param in initMethodSymbol.ParameterList.Parameters)
-            {
-                initParams.Add((
-                            param.ToString(),
-                            param.Identifier.Text,
-                            param.ToString(),
-                            param.Default?.Value.ToString()
-                            ));
-            }
-        }
         return new InstantiableInfo(
                 symbol.ContainingNamespace.IsGlobalNamespace ? null : symbol.ContainingNamespace.ToDisplayString(),
                 symbol.Name,
                 sceneName,
                 initFuncName,
-                initParams?.ToArray(),
+                GeneratorHelper.GetMethodArguments(classDeclaration, initFuncName),
                 ctx.TargetNode.SyntaxTree.FilePath);
     }
 
@@ -87,7 +60,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         bool hasInit = value.InitParams != null;
 
         var paramsDefinitionText = hasInit ? string.Join(", ",
-                value.InitParams.Select(param => param.fullArg)) : "";
+                value.InitParams.Select(param => param.FullArgument)) : "";
 
         var sb = new StringBuilder()
             .AppendLine("using Godot;")
@@ -116,7 +89,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         if (hasInit)
         {
             var argumentsText = string.Join(", ",
-                    value.InitParams.Select(param => string.Format("{0}", param.name)));
+                    value.InitParams.Select(param => string.Format("{0}", param.Name)));
             sb.AppendFormat("\t\tscene.{0}({1});", value.InitName, argumentsText);
         }
 
@@ -131,7 +104,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         spc.AddSource($"{value.ClassName}.g.cs", SourceText.From(output, Encoding.UTF8));
     }
 
-    private static string ToResPath(string absPath, string projectDir, string? customFileName)
+    private static string ToResPath(string absPath, string projectDir, string? customFileName = null)
     {
         string normalizedRoot = projectDir.Replace('\\', '/').TrimEnd('/');
         string normalizedFile = absPath.Replace('\\', '/');
@@ -142,37 +115,9 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         string dir = Path.GetDirectoryName(relative);
 
         string fileName = Path.GetFileNameWithoutExtension(relative);
-        if (customFileName is not null)
+        if (customFileName != null)
             fileName = customFileName;
-        return "res://" + Path.Combine(dir, ToSnakeCase(fileName) + ".tscn");
-    }
-
-    private static string ToSnakeCase(string text)
-    {
-        if (text == null)
-        {
-            throw new ArgumentNullException(nameof(text));
-        }
-        if (text.Length < 2)
-        {
-            return text.ToLowerInvariant();
-        }
-        var sb = new StringBuilder();
-        sb.Append(char.ToLowerInvariant(text[0]));
-        for (int i = 1; i < text.Length; ++i)
-        {
-            char c = text[i];
-            if (char.IsUpper(c))
-            {
-                sb.Append('_');
-                sb.Append(char.ToLowerInvariant(c));
-            }
-            else
-            {
-                sb.Append(c);
-            }
-        }
-        return sb.ToString();
+        return "res://" + Path.Combine(dir, StringUtilities.ToSnakeCase(fileName) + ".tscn");
     }
 
     sealed private record InstantiableInfo
@@ -180,7 +125,7 @@ sealed public class InstantiableSourceGenerator : IIncrementalGenerator
         public readonly string? NamespaceName;
         public readonly string ClassName;
         public readonly string? SceneName;
-        public readonly (string fullArg, string name, string? type, string? defaultValue)[]? InitParams;
+        public readonly ArgumentData[]? InitParams;
         public readonly string AbsFilePath;
 
         public readonly string InitName;
