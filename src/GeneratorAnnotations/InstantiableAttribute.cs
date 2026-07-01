@@ -14,8 +14,8 @@ namespace Qengu.GodotUtils.GeneratorAnnotations;
 /// uninitialized, it will default to the snake case of the script name. <br/>
 /// Note that the scene this script is attached to must be in the same folder as the script.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-sealed public class InstantiableAttribute(string init = "Init", string? sceneName = null) : Attribute
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public sealed class InstantiableAttribute(string init = "Init", string? sceneName = null) : Attribute
 {
     public string Init { get; } = init;
     public string? SceneName { get; } = sceneName;

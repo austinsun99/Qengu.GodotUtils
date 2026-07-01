@@ -10,7 +10,7 @@ namespace Qengu.GodotUtils.SourceGenerators;
 /// to be passed in on instantiate 
 /// </summary>
 [Generator]
-sealed public class InstantiableSourceGenerator : IIncrementalGenerator
+public sealed class InstantiableSourceGenerator : IIncrementalGenerator
 {
 
     private const string ATTRIBUTENAME = "Qengu.GodotUtils.GeneratorAnnotations.InstantiableAttribute";
