@@ -28,8 +28,4 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Qengu.GodotUtils.GeneratorAnnotations\Qengu.GodotUtils.GeneratorAnnotations.csproj" />
-    </ItemGroup>
 </Project>

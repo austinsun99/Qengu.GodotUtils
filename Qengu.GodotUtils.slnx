@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Qengu.GodotUtils.Extensions/Qengu.GodotUtils.Extensions.csproj" />
-    <Project Path="src/Qengu.GodotUtils.GeneratorAnnotations/Qengu.GodotUtils.GeneratorAnnotations.csproj" />
-    <Project Path="src/Qengu.GodotUtils.SourceGenerators/Qengu.GodotUtils.SourceGenerators.csproj" />
+    <Project Path="src/Qengu.GodotUtils.csproj" />
   </Folder>
+  <Project Path="Qengu.GodotUtils.SourceGenerators/Qengu.GodotUtils.SourceGenerators.csproj" />
 </Solution>

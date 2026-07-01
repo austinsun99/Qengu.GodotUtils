@@ -1,5 +1,0 @@
-res://source_generators/instantiable/instantiator.tscn
-res://source_generators/instantiable/Instantiator.cs
-res://source_generators/instantiable/InstantiableNode.cs
-res://source_generators/instantiable/instantiable_node_two_different_name.tscn
-res://source_generators/instantiable/InstantiableNodeTwo.cs
