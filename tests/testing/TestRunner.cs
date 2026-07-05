@@ -10,20 +10,20 @@ public partial class TestRunner : Node
     public async override void _Ready()
     {
         await NodeTestHelper.AwaitProcessFrame(GetTree());
-        IEnumerable<(Type type, IEnumerable<MethodInfo> testMethods)> testClasses = TestRunnerHelper.GetTestMethods();
+        IEnumerable<(Type type, IEnumerable<TestMethodInfo> testMethods)> testClasses = TestRunnerHelper.GetTestMethods();
         foreach (var (type, testMethods) in testClasses)
         {
             var instance = Activator.CreateInstance(type);
-            foreach (var method in testMethods)
+            foreach (var testMethodInfo in testMethods)
             {
                 try
                 {
-                    object result = method.Invoke(instance, null);
+                    object result = testMethodInfo.MethodInfo.Invoke(instance, testMethodInfo.AttributeType == typeof(NodeTestAttribute) ? [this] : null);
                     if (result is Task task)
                     {
                         await task;
                     }
-                    GD.Print($"Success: {method.Name}");
+                    GD.Print($"Success: {testMethodInfo.MethodInfo.Name}");
                 }
                 catch (TargetInvocationException ex)
                 {
