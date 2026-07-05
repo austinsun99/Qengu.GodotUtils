@@ -5,3 +5,5 @@ res://source_generators/instantiable/Instantiator.cs
 res://source_generators/instantiable/InstantiableNode.cs
 res://testing/tests/BasicTestTwo.cs
 res://testing/tests/BasicTest.cs
+res://testing/TestRunnerRoot.cs
+res://testing/TestRunnerRoot.tscn
