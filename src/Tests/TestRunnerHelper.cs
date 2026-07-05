@@ -7,21 +7,29 @@ namespace Qengu.GodotUtils.Tests;
 
 public static class TestRunnerHelper
 {
-    public static IEnumerable<(Type classType, IEnumerable<MethodInfo> methods)> GetTestMethods(string pathToTestFile)
+    public static IEnumerable<(Type classType, IEnumerable<MethodInfo> methods)> GetTestMethods()
     {
         List<(Type classType, IEnumerable<MethodInfo> methods)> methods = [];
 
-        IEnumerable<Type> classes =
-            Assembly.LoadFrom(pathToTestFile)
-            .GetTypes()
-            .Where(x => x.IsClass && x.IsPublic);
-
-        foreach (var type in classes)
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            IEnumerable<MethodInfo> testMethods = GetTestMethods(type);
-            if (testMethods.Any())
+            Type[] types;
+            try
             {
-                methods.Add((type, testMethods));
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types.Where(t => t != null).Select(t => t!).ToArray();
+            }
+
+            foreach (var type in types)
+            {
+                IEnumerable<MethodInfo> testMethods = GetTestMethods(type);
+                if (testMethods.Any())
+                {
+                    methods.Add((type, testMethods));
+                }
             }
         }
 
@@ -32,8 +40,7 @@ public static class TestRunnerHelper
     {
         return type
             .GetMethods()
-            .Where(m => m.CustomAttributes
-            .Any(a => a.AttributeType == typeof(TestAttribute)));
+            .Where(m => m.GetCustomAttribute<TestAttribute>() != null);
     }
 
 }
