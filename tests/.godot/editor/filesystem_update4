@@ -1,9 +1,6 @@
-res://testing/test_runner.tscn
-res://testing/TestRunner.cs
+res://testing/TestRunnerRoot.tscn
+res://testing/TestRunnerRoot.cs
 res://source_generators/instantiable/InstantiableNodeTwo.cs
 res://source_generators/instantiable/Instantiator.cs
 res://source_generators/instantiable/InstantiableNode.cs
-res://testing/tests/BasicTestTwo.cs
 res://testing/tests/BasicTest.cs
-res://testing/TestRunnerRoot.cs
-res://testing/TestRunnerRoot.tscn
