@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://c58ns58ytbl2m"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_4akbh"]
+script/source = "using Qengu.GodotUtils.Tests;
+using Godot;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
+
+public partial class TestRunner : Node
+{
+    public async override void _Ready()
+    {
+
+    }
+
+    public override void _Process(double delta)
+    {
+
+    }
+
+}
+"
+
+[node name="TestRunner" type="Node" unique_id=978151960]
+script = SubResource("CSharpScript_4akbh")
