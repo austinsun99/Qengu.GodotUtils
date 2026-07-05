@@ -3,6 +3,9 @@ using Godot;
 
 namespace Qengu.GodotUtils.Tests;
 
+/// <summary>
+/// Various helper methods for managing nodes during tests. Most methods will wait a frame during an action.
+/// </summary>
 public static class NodeTestHelper
 {
     public static async Task<(bool err, Node? instance)> InstantiateAndAddScene<T>(Node parent, string path) where T : Node

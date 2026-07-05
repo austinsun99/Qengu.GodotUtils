@@ -7,9 +7,17 @@ using Godot;
 
 namespace Qengu.GodotUtils.Tests;
 
+/// <summary>
+/// A default implementation of a test runner.
+/// </summary>
 public sealed class TestRunner
 {
 
+    /// <summary>
+    /// Finds and runs the tests specified by the test attribute.
+    /// </summary>
+    /// <param name="parent">The parent root node for tests that require instantiating nodes</param>
+    /// <returns>An async enumerable after each test completion</returns>
     public async IAsyncEnumerable<TestResult> RunTests(Node parent)
     {
         IEnumerable<(Type type, IEnumerable<TestMethodInfo> testMethods)> testClasses = GetTestMethods();

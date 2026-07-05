@@ -1,11 +1,16 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Godot;
 
 namespace Qengu.GodotUtils;
 
 public static class GodotUtils
 {
+    /// <summary>
+    /// Obtain a list of relative (to res://) file names.
+    /// </summary>
+    /// <param name="path">The path to search</param>
+    /// <param name="recursive">Whether or not to search recursively</param>
+    /// <returns>An error if the directory access failed, and the list of file names obtained</returns>
     public static (bool err, List<string> files) GetFilesInDirectory(string path, bool recursive = false)
     {
         List<string> files = [];
@@ -36,6 +41,12 @@ public static class GodotUtils
         return (false, files);
     }
 
+    /// <summary>
+    /// Attemps to instantiate a scene, and return the value.
+    /// </summary>
+    /// <param name="path">The path to the scene resource</param>
+    /// <typeparam name="T">The type to cast the scene to</typeparam>
+    /// <returns>Whether an error occured, and the object instantiated</returns>
     public static (bool err, T? obj) InstantiateScene<T>(string path) where T : Node
     {
         PackedScene scene = GD.Load<PackedScene>(path);
