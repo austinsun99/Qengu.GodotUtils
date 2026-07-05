@@ -21,7 +21,7 @@ public sealed class TestRunner
                 TestResult testResult;
                 try
                 {
-                    object? result = testMethodInfo.MethodInfo.Invoke(instance, testMethodInfo.AttributeType == typeof(NodeTestAttribute) ? [parent] : null);
+                    object? result = testMethodInfo.MethodInfo.Invoke(instance, testMethodInfo.InjectionType == InjectionType.ParentNode ? [parent] : null);
 
                     if (result is Task task)
                     {
@@ -69,21 +69,16 @@ public sealed class TestRunner
 
     private static IEnumerable<TestMethodInfo> GetTestMethods(Type type)
     {
-        List<TestMethodInfo> testAttributeMethods =
-            type
-            .GetMethods()
-            .Where(m => m.GetCustomAttribute<TestAttribute>() != null)
-            .Select(t => new TestMethodInfo(t, typeof(TestAttribute)))
-            .ToList();
-
-        IEnumerable<TestMethodInfo> nodeTestAttributeMethods =
-            type
-            .GetMethods()
-            .Where(m => m.GetCustomAttribute<NodeTestAttribute>() != null)
-            .Select(t => new TestMethodInfo(t, typeof(NodeTestAttribute)));
-
-        testAttributeMethods.AddRange(nodeTestAttributeMethods);
-        return testAttributeMethods;
+        List<TestMethodInfo> methods = new();
+        foreach (var methodInfo in type.GetMethods())
+        {
+            TestAttribute? attribute = methodInfo.GetCustomAttribute<TestAttribute>();
+            if (attribute is not null)
+            {
+                methods.Add(new TestMethodInfo(methodInfo, attribute.InjectionType));
+            }
+        }
+        return methods.AsEnumerable();
     }
 
 }
