@@ -2,8 +2,6 @@ using System.Threading.Tasks;
 using Godot;
 using Qengu.GodotUtils.Tests;
 
-using static Qengu.GodotUtils.Tests.Assertions;
-
 public class BasicTest
 {
 
@@ -17,13 +15,27 @@ public class BasicTest
     [Test]
     public void FailTest()
     {
-        Assert(1 == 2);
+        Assert.That(1 == 2);
     }
 
     [Test]
     public void SucceedTest()
     {
-        Assert(1 == 1);
+        Assert.That(1 == 1);
+    }
+
+    [Test]
+    public void TestNotNull()
+    {
+        int x = 5;
+        Assert.That(x, Is.NotNull);
+    }
+
+    [Test]
+    public void TestNotNullFail()
+    {
+        object x = null;
+        Assert.That(x, Is.NotNull);
     }
 
     [Test(InjectionType.ParentNode)]
