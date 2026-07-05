@@ -10,7 +10,11 @@ public partial class TestRunnerRoot : Node
         TestRunner testRunner = new TestRunner(this);
         await foreach (TestResult testResult in testRunner.RunTests())
         {
-            GD.Print(string.Format("[{0}] ({1} {2}){3}", testResult.Success ? "Success" : "Failure", testResult.FileName, testResult.MethodName, testResult.Success ? string.Empty : $" {testResult.ExceptionMessage}"));
+            GD.PrintRich(string.Format("[{0}] [b]({1} {2})[/b]{3}",
+                        testResult.Success ? "[color=green]✔[/color]" : "[color=red]✘[/color]",
+                        testResult.FileName,
+                        testResult.MethodName,
+                        testResult.Success ? string.Empty : $" {testResult.ExceptionMessage}"));
         }
     }
 

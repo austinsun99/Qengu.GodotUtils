@@ -41,7 +41,7 @@ public sealed class TestRunner(Node parent)
                 }
                 catch (TargetInvocationException ex)
                 {
-                    testResult = new TestResult(false, type.Name, testMethodInfo.MethodInfo.Name, ex.InnerException?.Message ?? string.Empty);
+                    testResult = new TestResult(false, type.Name, testMethodInfo.MethodInfo.Name, ex.InnerException?.ToString() ?? string.Empty);
                 }
                 finally
                 {
