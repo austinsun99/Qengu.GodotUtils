@@ -14,7 +14,7 @@ public static class NodeExtensions
     /// <typeparam name="T">The type to find</typeparam>
     /// <param name="includeInternal"> Whether or not to include internal nodes </param>
     /// <returns>The child, or null if there are none</returns>
-    public static T? GetChildOrNull<T>(this Node node, bool includeInternal = false) where T : Node
+    public static T? GetChildOfTypeOrNull<T>(this Node node, bool includeInternal = false) where T : Node
     {
         foreach (var child in node.GetChildren(includeInternal))
             if (child is T childAsT) return childAsT;
