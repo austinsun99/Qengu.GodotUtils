@@ -2,12 +2,6 @@ using System;
 
 namespace Qengu.GodotUtils.Tests;
 
-public enum InjectionType
-{
-    None,
-    ParentNode,
-}
-
 /// <summary>
 /// An attribute marking a method as a test method, which will automatically be called by a test runner.
 /// An injection type can be specified in order to get some dependency injection
