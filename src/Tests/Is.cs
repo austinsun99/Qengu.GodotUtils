@@ -1,3 +1,5 @@
+using System;
+
 namespace Qengu.GodotUtils.Tests;
 
 /// <summary>
@@ -14,4 +16,15 @@ public static class Is
     {
         return !Null(@object);
     }
+
+    public new static Func<object, bool> Equals(object compare)
+    {
+        return @object => @object.Equals(compare);
+    }
+
+    public static Func<object, bool> NotEquals(object compare)
+    {
+        return @object => !@object.Equals(compare);
+    }
+
 }

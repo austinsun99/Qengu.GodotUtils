@@ -31,6 +31,19 @@ public class BasicTest
         Assert.That(x, Is.NotNull);
     }
 
+    [Test(InjectionType.ParentNode)]
+    public async Task SpawnMesh(Node parent)
+    {
+        MeshInstance3D mesh = new MeshInstance3D()
+        {
+            Mesh = new BoxMesh(),
+            Position = Vector3.Zero
+        };
+        parent.AddChild(mesh);
+        await parent.ToSignal(parent.GetTree().CreateTimer(5f), SceneTreeTimer.SignalName.Timeout);
+        mesh.QueueFree();
+    }
+
     [Test]
     public void TestNotNullFail()
     {
