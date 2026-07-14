@@ -24,7 +24,7 @@ where TForward : notnull where TReverse : notnull
             get => dict[key];
             set
             {
-                other[dict[key]] = key;
+                other.UpdateValue(dict[key], key);
                 dict[key] = value;
             }
         }
@@ -35,11 +35,6 @@ where TForward : notnull where TReverse : notnull
         public bool IsReadOnly => false;
 
         public Indexer(Dictionary<TF, TR> _dict) : this(_dict, null!) { }
-
-        internal void UpdateIndexer(Indexer<TR, TF> _other)
-        {
-            other = _other;
-        }
 
         public void Add(TF key, TR value)
         {
@@ -67,6 +62,16 @@ where TForward : notnull where TReverse : notnull
         public bool TryGetValue(TF key, [MaybeNullWhen(false)] out TR value) => dict.TryGetValue(key, out value);
         public IEnumerator<KeyValuePair<TF, TR>> GetEnumerator() => dict.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => dict.GetEnumerator();
+
+        internal void UpdateIndexer(Indexer<TR, TF> _other)
+        {
+            other = _other;
+        }
+
+        private void UpdateValue(TF key, TR value)
+        {
+            dict[key] = value;
+        }
     }
 
     private readonly Dictionary<TForward, TReverse> forwardDict = [];
