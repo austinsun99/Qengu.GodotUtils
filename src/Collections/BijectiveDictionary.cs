@@ -24,7 +24,7 @@ where TForward : notnull where TReverse : notnull
             get => dict[key];
             set
             {
-                other.UpdateValue(dict[key], key);
+                other.UpdateValue(value, key);
                 dict[key] = value;
             }
         }
@@ -70,7 +70,9 @@ where TForward : notnull where TReverse : notnull
 
         private void UpdateValue(TF key, TR value)
         {
-            dict[key] = value;
+            TF prevKey = other[value];
+            dict.Remove(prevKey);
+            dict.Add(key, value);
         }
     }
 
